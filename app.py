@@ -32,12 +32,16 @@ def data_clean(df, metadados):
 
 def feat_eng(df):
     '''
-    Função ???????????????????????????
-    INPUT: ???????????????????????????
-    OUTPUT: ???????????????????????????
+    Função que cria novas colunas em nosso dataframe
+    INPUT: Pandas DataFrame
+    OUTPUT: Pandas DataFrame
     '''
-    #colocar log info
-    pass
+    df["tempo_voo_esperado"] = (df["datetime_chegada_formatted"] - df["datetime_partida_formatted"]) / pd.Timedelta(hours=1)
+    df["tempo_voo_hr"] = df["tempo_voo"] /60
+    df["atraso"] = df["tempo_voo_hr"] - df["tempo_voo_esperado"]
+    df["dia_semana"] = df["data_voo"].dt.day_of_week #0=segunda
+    logger.info(f'Engenharia de features concluída; {datetime.datetime.now()}')
+    return df
 
 def save_data_sqlite(df):
     try:
@@ -69,11 +73,10 @@ if __name__ == "__main__":
     metadados  = utils.read_metadado(os.getenv('META_PATH'))
     df = pd.read_csv(os.getenv('DATA_PATH'),index_col=0)
     df = data_clean(df, metadados)
-    print(df.head())
     utils.null_check(df, metadados["null_tolerance"])
-    x = utils.keys_check(df, metadados["cols_chaves"])
-    print(x)
-    #df = feat_eng(df)
-    #save_data_sqlite(df)
+    utils.keys_check(df, metadados["cols_chaves_renamed"] )
+    df = feat_eng(df)
+    print(df.head())
+    save_data_sqlite(df)
     fetch_sqlite_data(metadados["tabela"][0])
     logger.info(f'Fim da execução ; {datetime.datetime.now()}')

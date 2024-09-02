@@ -16,6 +16,7 @@ def read_metadado(meta_path):
         "tipos_originais" : dict(zip(list(meta["cols_originais"]),list(meta["tipo_original"]))),
         "tipos_formatted" : dict(zip(list(meta["cols_renamed"]),list(meta["tipo_formatted"]))),
         "cols_chaves" : list(meta.loc[meta["key"] == 1]["cols_originais"]),
+        "cols_chaves_renamed" : list(meta.loc[meta["key"] == 1]["cols_renamed"]),
         "null_tolerance" : dict(zip(list(meta["cols_renamed"]), list(meta["raw_null_tolerance"]))),
         "std_str" : list(meta.loc[meta["std_str"] == 1]["cols_renamed"]),
         "corrige_hr" : list(meta.loc[meta["corrige_hr"] == 1]["cols_renamed"])
@@ -34,7 +35,8 @@ def null_exclude(df, cols_chaves):
     for col in cols_chaves:
         tmp_df = tmp.loc[~df[col].isna()]
         tmp = tmp_df.copy()
-    return tmp_df
+        
+    return tmp
 
 def select_rename(df, cols_originais, cols_renamed):
     '''
@@ -96,12 +98,18 @@ def null_check(df, null_tolerance):
             
 def keys_check(df, cols_chaves):
     '''
-    Função ???????????????????????????
-    INPUT: ???????????????????????????
-    OUTPUT: ???????????????????????????
+    Função que valida as chaves, comparando a quantidade de observações únicas em relação à base.
+    INPUT: Pandas DataFrame, lista de colunas
+    OUTPUT: Boolean
     '''
-    #colocar log info
-    pass
+    print(len(df[cols_chaves].drop_duplicates()))
+    print(len(df))
+    if len(df[cols_chaves].drop_duplicates()) == len(df):
+        logger.info(f"As chaves {', '.join(cols_chaves)} foram validadas; {datetime.datetime.now()}")
+        return True
+    else: 
+        logger.warning(f"As chaves {', '.join(cols_chaves)} estão  inválidas; {datetime.datetime.now()}")
+        return False
 
 # Funções auxiliares -------------------------------------------
 
