@@ -23,9 +23,9 @@ source bin/activate
 ```
 pip install -r requirements.txt
 ```
-6. Coloque as frases em código morse no arquivo frases.txt
+6. Crie o arquivo .env, com duas variáveis, META_PATH e DATA_PATH. META_PATH deve indicar o caminho dos metadados (assets/work_metadados_flights.xsls) e o DATA_PATH o csv dos vôos (https://raw.githubusercontent.com/JackyP/testing/master/datasets/nycflights.csv)
 
-7. Execute o script e veja as imagens decodificadas na tela
+7. Execute o script e veja a tabela gerada
 ```
 python app.py
 ```
