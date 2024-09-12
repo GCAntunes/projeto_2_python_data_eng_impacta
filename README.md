@@ -1,5 +1,4 @@
 ### PROJETO 2 
-#### DECIFRANDO CÓDIGO MORSE
 
 ### Como utilizar:
 
